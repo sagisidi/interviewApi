@@ -34,16 +34,31 @@ class Movies {
 		});
 
 	}
-	addMoviesToDb(entry){
+	async addMoviesToDb(entry){
+		const link = entry.link[0].attributes.href;
 		const title = entry['im:name'].label;
 		const images = entry['im:image'].map(item => item.label) ;
-		Movie.create({title,imagesUrl:images})
+		const rating = await this.getRating(link);
+		
+		//Add movie info to DB;
+		Movie.create({title,imagesUrl:images,rating:rating})
      	.then(result => {
      	   console.log("add movie successfully")
      	})
      	.catch(err => {
            console.log(err);
-     	})  
+     	})
+
+	}
+
+	async getRating(url){
+
+		const rp = require('request-promise');
+		const $ = require('cheerio');
+		const html = await rp(url);
+		const ratingString = await $('figcaption', html).text();
+		return ratingString.split(" ")[0]
+
 	}
   
   }

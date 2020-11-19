@@ -14,7 +14,10 @@ const moviesSchema = new Schema({
         {
             type:String
         }
-    ]
+    ],
+    rating:{
+    	type:String
+    }
 })
 
 
