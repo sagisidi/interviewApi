@@ -2,13 +2,23 @@ const User = require('../models/User');
 const Auth = require('../utils/Auth');
 const bcrypt = require('bcrypt');   
 
+/*
+Search for user with the same name and email
+    If user exist:
+        -Compare between provided and svaed password
+            -If password match:
+                -Generate token and send userid and token to the client
+            Else
+                Send response with error
+    If user doesnt exist:
+        send response with error
+*/
+
 const postLogin = (req, res) => {
     
     const { email, name, password } = req.body;
-    if (!email || !name || !password)
-        return res.status(422).json("Please fill all fields.");
-    if(!Auth.ValidateEmail(email))
-        return res.status(422).json('Email is invalid');
+
+
     
     User.findOne({ email:email, name:name })
         .then(user => {
@@ -16,7 +26,7 @@ const postLogin = (req, res) => {
                 token = Auth.generateToken(user._id);
                 return res.status(200).json({ userid: user._id, token: token });
             }
-            return res.status(422).json("Email or password are incorrect");
+            return res.status(422).json(["Email, Name or password are incorrect"]);
 
         })
         .catch(err => {
@@ -25,12 +35,12 @@ const postLogin = (req, res) => {
 
 }
 
+/*
+Check if token already exist and if its verified token 
+*/
 const getLogin = (req, res) => {
     const { authorization } = req.headers;
-    const userid = Auth.verifyToken(authorization);
-
-    if (!userid)
-        return res.status(401).json("Not authorized");
+    const userid = req.userid;
 
     
     return res.status(200).json({ userid: userid, token: authorization });

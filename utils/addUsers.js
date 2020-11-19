@@ -10,7 +10,7 @@ mongoose.connect(mongo, {
 })
     .then(data => {
         console.log('connected');
-            addUser('https://randomuser.me/api/?results=100');
+            addUser('https://randomuser.me/api/?results=1000');
     })
     .catch(err => {
         console.log(err);
@@ -40,7 +40,6 @@ function addUser(url){
               user.password =  bcrypt.hashSync(user.email, salt);
               return user;
            })
-           console.log(users);
            users.map(user=>{
               User.create({email:user.email,name:user.name,password:user.password})
              .then(result => {

@@ -5,10 +5,7 @@ const Auth = require('../utils/Auth');
 
 const getProfile =  async (req, res) => {
     
-    const { authorization } = req.headers;
-    const userid = Auth.verifyToken(authorization);
-    if(!userid)
-        return res.status(401).json("Not authorized");
+    const userid = req.userid;
 
     const user = await User.findOne({_id:userid})
                 .populate({path:'wishlist',select:'-__v'});
@@ -21,11 +18,7 @@ const getProfile =  async (req, res) => {
 
 const addToWishList = async (req,res) =>{
     const {title} = req.body;
-    const { authorization } = req.headers;
-    const userid = Auth.verifyToken(authorization);
-
-    if(!userid)
-        return res.status(401).json("Not authorized");
+    const userid = req.userid;
 
     const result = await Movie.find({title})
     if(!result[0])
@@ -44,11 +37,7 @@ const addToWishList = async (req,res) =>{
 
 const removeFromWishList = async (req,res) =>{
     const {title} = req.body;
-    const { authorization } = req.headers;
-
-    const userid = Auth.verifyToken(authorization);
-    if(!userid)
-        return res.status(401).json("Not authorized");
+    const userid = req.userid;
 
     const result = await Movie.find({title})
     if(!result[0])

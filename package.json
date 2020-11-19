@@ -1,8 +1,11 @@
 {
-  "name": "Api",
+  "name": "interviweApi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engine": {
+    "node": "10.11.0"
+  },
   "scripts": {
     "test": "jest --watchAll",
     "start": "node app.js",
